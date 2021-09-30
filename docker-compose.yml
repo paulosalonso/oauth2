@@ -1,0 +1,53 @@
+version: "3"
+services:
+
+  mysql:
+    image: mysql:8.0.23
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - volume=./volume
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 60s
+      retries: 10
+
+  authorization-server:
+    build: ./authorization-server
+    ports:
+      - 8081:8081
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/authorizationserver?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mysql
+      SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_GENERATE-DDL: 'false'
+      SPRING_JPA_HIBERNATE_DDL-AUTO: none
+      SPRING_DATASOURCE_INITIALIZATION-MODE: always
+      APPLICATION_SECURITY_LOGOUT_SUCCESS-URL: http://localhost:8000
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  resource-server:
+    build: ./resource-server
+    ports: 
+      - 8080:8080
+    environment:
+      OAUTH_INTROSPECTION_URI: http://authorization-server:8081/oauth/check_token
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/resourceserver?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: mysql
+      SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.MySQL8Dialect
+      SPRING_JPA_HIBERNATE_DDL-AUTO: create-drop
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  client:
+    build: ./client
+    ports:
+      - 8000:8000
