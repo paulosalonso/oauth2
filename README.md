@@ -4,10 +4,16 @@
 
 Simular um ambiente com todas as partes envolvidas em um fluxo de autorização com OAuth2.
 
+## Pré-Requisitos
+
+- Docker
+
 ## Como usar
 
 Executar o script `run.sh` para construir as aplicações e executá-las com Docker. As aplicações abaixo serão executadas:
 
+- `mysql` (localhost:3306)
+  - O banco de dados é iniciado com um cliente e um usuário
 - `authortization-server` (http://localhost:8081)
   - Aplicação Java responsável por autenticar e autorizar o acesso
 - `resource-server` (http://localhost:8080)
@@ -21,14 +27,17 @@ Acesse a URL http://localhost:8000 (`client JS`) via web browser. Será exibida 
 
 Para realizar o login, utilize as credenciais abaixo:
 
-usuário: __user-a__  
-senha: __123456__
+Clien ID: __client-a__
+Client Secret: __123456__
+
+Usuário: __user-a__  
+Senha: __123456__
 
 Ao executar uma ação sem fazer login o `resource-server` responderá com status code __401 - Unauthorized__
 
 ## Autorização
 
-Ao fazer login será redirecionado para a página de autorização, onde há 3 escopos para aceite/recusa. Os escopos `read` e `write` tem ação direta no cadastro/listagem de cidades. O escopo `other` é apenas um "workaround", pois ao aceitar todos os escopos a aplicação não é mais redirecionada para a tela de autorização. Dado isso, sempre deixe esse escopo com a opção `Deny`.
+Ao fazer login será redirecionado para a página de autorização. Para o cliente __client-a__ existem 2 escopos cadastrados: `read` e `write`.
 
 ### Escopos
 
