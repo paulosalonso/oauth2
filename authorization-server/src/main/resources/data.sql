@@ -6,3 +6,4 @@ insert into client_entity_grant_types(client_entity_client_id, grant_types) valu
 insert into client_entity_redirect_uris(client_entity_client_id, redirect_uris) values ('client-a', 'http://localhost:8000');
 insert into client_entity_scopes(client_entity_client_id, scopes) values ('client-a', 'read');
 insert into client_entity_scopes(client_entity_client_id, scopes) values ('client-a', 'write');
+insert into client_entity_scopes(client_entity_client_id, scopes) values ('client-a', 'other');
